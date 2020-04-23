@@ -9,7 +9,7 @@ public interface MyRepository extends CrudRepository<MyEntity, Integer> {
 
     List<MyEntity> findByF1(String f1);
     
-    MyEntity findOne(int f1);
+    MyEntity findOne(int id);
     
     MyEntity save(MyEntity entity);
     
