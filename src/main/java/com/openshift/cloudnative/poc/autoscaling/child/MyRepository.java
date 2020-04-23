@@ -7,9 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface MyRepository extends CrudRepository<MyEntity, Integer> {
 
-    List<MyEntity> findByName(String f1);
+    List<MyEntity> findByF1(String f1);
     
-    MyEntity findByEntityId(int f1);
+    MyEntity findOne(int f1);
     
     MyEntity save(MyEntity entity);
     
