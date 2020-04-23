@@ -1,5 +1,10 @@
 package com.openshift.cloudnative.poc.autoscaling.child;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
+import org.springframework.data.annotation.Id;
+
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.GenerationType;
@@ -8,9 +13,9 @@ package com.openshift.cloudnative.poc.autoscaling.child;
 //@Entity
 public class MyEntity {
 
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.AUTO)
-//	private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 //	private String name;
 //
 //	public Book() {
@@ -24,15 +29,15 @@ public class MyEntity {
 //	public String toString() {
 //		return "Book{" + "id=" + id + ", name='" + name + '\'' + '}';
 //	}
-//
-//	public Long getId() {
-//		return id;
-//	}
-//
-//	public void setId(Long id) {
-//		this.id = id;
-//	}
-//
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 //	public String getName() {
 //		return name;
 //	}
