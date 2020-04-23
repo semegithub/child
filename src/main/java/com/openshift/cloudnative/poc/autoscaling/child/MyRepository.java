@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface MyRepository extends CrudRepository<MyEntity, String> {
 
-    List<MyEntity> findByName(String name);
+    List<MyEntity> findByName(String f1);
 
 }
