@@ -1,11 +1,12 @@
 package com.openshift.cloudnative.poc.autoscaling.child;
 
-import java.awt.print.Book;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -50,8 +51,7 @@ public class ChildScalingController {
 //		System.out.println("\nfindById(1L)");
 //		repository.findById(1l).ifPresent(x -> System.out.println(x));
 
-		System.out.println("\nfindByName('Node')");
-		repository.findByName("Node").forEach(x -> System.out.println(x));
+		Optional<List<MyEntity>> repository.findAll();
 
 		System.out.println(message);
 
