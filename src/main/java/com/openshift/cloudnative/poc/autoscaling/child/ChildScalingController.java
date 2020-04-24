@@ -2,6 +2,7 @@ package com.openshift.cloudnative.poc.autoscaling.child;
 
 import java.security.SecureRandom;
 import java.util.Collection;
+import java.util.Optional;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 public class ChildScalingController {
@@ -30,7 +34,7 @@ public class ChildScalingController {
 		return message;
 	}
 
-	@GetMapping(path = "/childlightdataload")
+	@GetMapping(path = "/dataload")
 	public String childlightdataload() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - light data load ";
@@ -44,33 +48,14 @@ public class ChildScalingController {
 		return message;
 	}
 
-	@GetMapping(path = "/childdelayeddataload")
-	public String childdelayeddataload() {
+	@GetMapping(path = "/highCPULoad", produces = "text/html")
+	@ApiOperation(value="Heavy CPU API call", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
+	public String childdelayeddataload(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - delayed data load ";
-		for (int i = 0; i < 1000000; i++) {
-			try {
-				byte[] iv = new byte[16];
-				new SecureRandom().nextBytes(iv);
-
-				// IV
-				IvParameterSpec ivSpec = new IvParameterSpec(iv);
-
-				// Key
-				KeyGenerator generator = KeyGenerator.getInstance("AES");
-				generator.init(128);
-				SecretKey secretKey = generator.generateKey();
-
-				// Encrypt
-				Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
-				cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-				cipher.update("0123456789012345".getBytes());
-
-				byte[] data = cipher.doFinal();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		String message = "Child on host " + hostname + " - high CPU API call ";
+		long timer = System.currentTimeMillis();
+		generateCPU(childLoopNumber);
+		message += " done in "  + (System.currentTimeMillis() - timer) + "[ms]";
 
 		Iterable<MyEntity> entities = repository.findAll();
 
@@ -93,5 +78,29 @@ public class ChildScalingController {
 		System.out.println(message);
 
 		return message;
+	}
+	
+	private void generateCPU(Optional<Integer> loopNumber) {
+		int defaultLoopNumber = 1000;
+		if (loopNumber.isPresent()) defaultLoopNumber = loopNumber.get().intValue();
+		for (int i = 0; i < defaultLoopNumber; i++) {
+			try {
+				byte[] iv = new byte[16];
+				new SecureRandom().nextBytes(iv);
+				// IV
+				IvParameterSpec ivSpec = new IvParameterSpec(iv);
+				// Key
+				KeyGenerator generator = KeyGenerator.getInstance("AES");
+				generator.init(128);
+				SecretKey secretKey = generator.generateKey();
+				// Encrypt
+				Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
+				cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+				cipher.update("0123456789012345".getBytes());
+				cipher.doFinal();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
