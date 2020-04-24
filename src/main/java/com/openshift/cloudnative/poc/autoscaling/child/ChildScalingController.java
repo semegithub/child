@@ -5,6 +5,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.util.Collection;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -16,6 +17,8 @@ import javax.crypto.spec.IvParameterSpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,6 +44,8 @@ public class ChildScalingController {
 
 		Iterable<MyEntity> entities = repository.findAll();
 
+		message += " - " + ((Collection<?>) entities).size() + " entities loaded";
+		
 		System.out.println(message);
 
 		return message;
@@ -88,9 +93,26 @@ public class ChildScalingController {
 			}
 		}
 
+		Iterable<MyEntity> entities = repository.findAll();
+
+		message += " - " + ((Collection<?>) entities).size() + " entities loaded";
+		
 		System.out.println(message);
 
 		return message;
 	}
 
+	@PostMapping(path = "/create", consumes="application/json")
+	public String save(@RequestBody MyEntity create) {
+		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+		String message = "Child on host " + hostname + " - light data load ";
+
+		Iterable<MyEntity> entities = repository.findAll();
+
+		message += " - " + ((Collection<?>) entities).size() + " entities loaded";
+		
+		System.out.println(message);
+
+		return message;
+	}
 }
