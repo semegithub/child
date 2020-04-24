@@ -103,13 +103,13 @@ public class ChildScalingController {
 	}
 
 	@PostMapping(path = "/create", consumes="application/json")
-	public String save(@RequestBody MyEntity create) {
+	public String create(@RequestBody MyEntity entity) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - light data load ";
 
-		Iterable<MyEntity> entities = repository.findAll();
+		repository.save(entity);
 
-		message += " - " + ((Collection<?>) entities).size() + " entities loaded";
+		message += " - Entity:" + entity.getId() + " saved";
 		
 		System.out.println(message);
 
