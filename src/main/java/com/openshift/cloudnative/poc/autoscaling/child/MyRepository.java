@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
-
 public interface MyRepository extends CrudRepository<MyEntity, Integer> {
 
 //    List<MyEntity> findByF1(String f1);

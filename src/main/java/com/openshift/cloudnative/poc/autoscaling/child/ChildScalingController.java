@@ -5,8 +5,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -41,17 +39,7 @@ public class ChildScalingController {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - light data load ";
 
-//		repository.save(new Book("Java"));
-//		repository.save(new Book("Node"));
-//		repository.save(new Book("Python"));
-//
-//		System.out.println("\nfindAll()");
-//		repository.findAll().forEach(x -> System.out.println(x));
-//
-//		System.out.println("\nfindById(1L)");
-//		repository.findById(1l).ifPresent(x -> System.out.println(x));
-
-		Optional<List<MyEntity>> repository.findAll();
+		Iterable<MyEntity> entities = repository.findAll();
 
 		System.out.println(message);
 
