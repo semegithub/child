@@ -25,7 +25,9 @@ public class ChildScalingController {
 
 	@Autowired
 	private MyRepository repository;
-
+	@Autowired
+	private MyRepositoryImpl repositoryImpl;
+	
 	@GetMapping(path = "/")
 	public String status() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
