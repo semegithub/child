@@ -2,6 +2,7 @@ package com.openshift.cloudnative.poc.autoscaling.child;
 
 import java.security.SecureRandom;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.crypto.Cipher;
@@ -11,7 +12,6 @@ import javax.crypto.spec.IvParameterSpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,9 +42,9 @@ public class ChildScalingController {
 		String message = "Child on host " + hostname + " - data loadAll ";
 
 		long timer = System.currentTimeMillis();
-		Iterable<MyEntity> entities = repository.findAll();
+		List<MyEntity> entities = repository.findAll();
 		
-		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+		message += " - " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
 		System.out.println(message);
 
@@ -77,9 +77,9 @@ public class ChildScalingController {
 		
 		generateCPU(childLoopNumber);
 
-		Iterable<MyEntity> entities = repository.findAll();
+		List<MyEntity> entities = repository.findAll();
 
-		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+		message += " - " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
 		System.out.println(message);
 
