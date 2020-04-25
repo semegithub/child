@@ -71,18 +71,18 @@ public class ChildScalingController {
 	@GetMapping(path = "/childHighCPULoadAll", produces = "text/html")
 	@ApiOperation(value = "Heavy CPU API call", notes = "Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
 	public String childHighCPULoadAll(
-			@RequestParam(value = "childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber) {
+			@RequestParam(value = "childLoopNumber", defaultValue = "1000") Integer childLoopNumber) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - childHighCPULoadAll - CPU loop counter:" + childLoopNumber;
 		try {
 			
 			long timer = System.currentTimeMillis();
 
-			generateCPU(childLoopNumber);
+			generateCPU(childLoopNumber.intValue());
 
 			List<MyEntity> entities = repository.findAll();
 
-			message += " - " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+			message += " - loaded " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 
 		} catch (Exception e) {
 			message += " - " + e.getMessage();
@@ -121,7 +121,7 @@ public class ChildScalingController {
 
 		List<MyEntity> entities = repository.findAll();
 
-		message += " - Entity:" + savedEntity.getId() + " saved";
+		message += " - loaded " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 
 		System.out.println(message);
 
@@ -156,11 +156,10 @@ public class ChildScalingController {
 //		return message;
 //	}
 
-	private void generateCPU(Optional<Integer> loopNumber) {
-		int defaultLoopNumber = 1000;
-		if (loopNumber.isPresent())
-			defaultLoopNumber = loopNumber.get().intValue();
-		for (int i = 0; i < defaultLoopNumber; i++) {
+	private void generateCPU(Integer counter) {
+		int loopNumber = 1000;
+		loopNumber = counter.intValue();
+		for (int i = 0; i < loopNumber; i++) {
 			try {
 				byte[] iv = new byte[16];
 				new SecureRandom().nextBytes(iv);
