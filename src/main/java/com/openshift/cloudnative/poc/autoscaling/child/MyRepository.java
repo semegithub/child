@@ -17,8 +17,8 @@ public interface MyRepository extends JpaRepository<MyEntity, Integer> {
     @SuppressWarnings("unchecked")
 	MyEntity save(MyEntity entity);
     
-    @SuppressWarnings("unchecked")
- 	List<MyEntity> saveAll(List<MyEntity> entities);
+//    @SuppressWarnings("unchecked")
+// 	List<MyEntity> saveAll(List<MyEntity> entities);
     
     void delete(MyEntity entity);
 }

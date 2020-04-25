@@ -122,19 +122,19 @@ public class ChildScalingController {
 		return message;
 	}
 	
-	@PostMapping(path = "/save", consumes="application/json")
-	public String saveAll(@RequestBody List<MyEntity> entities) {
-		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - light data load ";
-
-		List<MyEntity> savedEntities = repository.saveAll(entities);
-
-		message += " - " + savedEntities.size() + " saved ";
-		
-		System.out.println(message);
-
-		return message;
-	}
+//	@PostMapping(path = "/saveAll", consumes="application/json")
+//	public String saveAll(@RequestBody List<MyEntity> entities) {
+//		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+//		String message = "Child on host " + hostname + " - light data load ";
+//
+//		List<MyEntity> savedEntities = repository.saveAll(entities);
+//
+//		message += " - " + savedEntities.size() + " saved ";
+//		
+//		System.out.println(message);
+//
+//		return message;
+//	}
 	
 	private void generateCPU(Optional<Integer> loopNumber) {
 		int defaultLoopNumber = 1000;
