@@ -10,6 +10,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,32 +36,69 @@ public class ChildScalingController {
 		return message;
 	}
 
-	@GetMapping(path = "/dataload")
-	public String childlightdataload() {
+	@GetMapping(path = "/childNoCPULoadAll")
+	public String childNoCPULoadAll() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - light data load ";
+		String message = "Child on host " + hostname + " - data loadAll ";
 
+		long timer = System.currentTimeMillis();
 		Iterable<MyEntity> entities = repository.findAll();
+		
+		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+		
+		System.out.println(message);
 
-		message += " - " + ((Collection<?>) entities).size() + " entities loaded";
+		return message;
+	}
+	
+	@GetMapping(path = "/childNoCPULoad")
+	public String childNoCPULoad(@RequestParam(value = "resultSetSize", defaultValue = "10") Integer resultSetSize) {
+		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+		String message = "Child on host " + hostname + " - data load ";
+		
+		long timer = System.currentTimeMillis();
+		
+		Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
+
+		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
 		System.out.println(message);
 
 		return message;
 	}
 
-	@GetMapping(path = "/highCPULoad", produces = "text/html")
+	@GetMapping(path = "/childHighCPULoadAll", produces = "text/html")
 	@ApiOperation(value="Heavy CPU API call", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
-	public String childdelayeddataload(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber) {
+	public String childHighCPULoadAll(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - high CPU API call ";
+		String message = "Child on host " + hostname + " - high CPU + data loadAll ";
+		
 		long timer = System.currentTimeMillis();
+		
 		generateCPU(childLoopNumber);
-		message += " done in "  + (System.currentTimeMillis() - timer) + "[ms]";
 
 		Iterable<MyEntity> entities = repository.findAll();
 
-		message += " - " + ((Collection<?>) entities).size() + " entities loaded";
+		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+		
+		System.out.println(message);
+
+		return message;
+	}
+	
+	@GetMapping(path = "/childHighCPULoad", produces = "text/html")
+	@ApiOperation(value="Heavy CPU API + data load", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
+	public String childHighCPULoad(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber, @RequestParam(value="resultSetSize", defaultValue = "10") Optional<Integer> resultSetSize) {
+		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+		String message = "Child on host " + hostname + " - high CPU + data load ";
+		
+		long timer = System.currentTimeMillis();
+		
+		generateCPU(childLoopNumber);
+
+		Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
+
+		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
 		System.out.println(message);
 
