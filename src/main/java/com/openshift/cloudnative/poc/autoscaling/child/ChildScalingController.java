@@ -26,7 +26,7 @@ public class ChildScalingController {
 
 	@Autowired
 	private MyRepository repository;
-	
+
 	@GetMapping(path = "/")
 	public String status() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
@@ -40,18 +40,18 @@ public class ChildScalingController {
 	@GetMapping(path = "/childNoCPULoadAll")
 	public String childNoCPULoadAll() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - data loadAll ";
+		String message = "Child on host " + hostname + " - no CPU data loadAll ";
 
 		long timer = System.currentTimeMillis();
 		List<MyEntity> entities = repository.findAll();
-		
+
 		message += " - " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
-		
+
 		System.out.println(message);
 
 		return message;
 	}
-	
+
 //	@GetMapping(path = "/childNoCPULoad")
 //	public String childNoCPULoad(@RequestParam(value = "resultSetSize", defaultValue = "10") Integer resultSetSize) {
 //		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
@@ -69,24 +69,29 @@ public class ChildScalingController {
 //	}
 
 	@GetMapping(path = "/childHighCPULoadAll", produces = "text/html")
-	@ApiOperation(value="Heavy CPU API call", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
-	public String childHighCPULoadAll(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber) {
+	@ApiOperation(value = "Heavy CPU API call", notes = "Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
+	public String childHighCPULoadAll(
+			@RequestParam(value = "childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - high CPU + data loadAll ";
-		
-		long timer = System.currentTimeMillis();
-		
-		generateCPU(childLoopNumber);
+		String message = "Child on host " + hostname + " - childHighCPULoadAll ";
+		try {
+			long timer = System.currentTimeMillis();
 
-		List<MyEntity> entities = repository.findAll();
+			generateCPU(childLoopNumber);
 
-		message += " - " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
-		
-		System.out.println(message);
+			List<MyEntity> entities = repository.findAll();
+
+			message += " - " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+
+		} catch (Exception e) {
+			message += " - " + e.getMessage();
+		} finally {
+			System.out.println(message);
+		}
 
 		return message;
 	}
-	
+
 //	@GetMapping(path = "/childHighCPULoad", produces = "text/html")
 //	@ApiOperation(value="Heavy CPU API + data load", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
 //	public String childHighCPULoad(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber, @RequestParam(value="resultSetSize", defaultValue = "10") Integer resultSetSize) {
@@ -108,7 +113,21 @@ public class ChildScalingController {
 //		return message;
 //	}
 
-	@PostMapping(path = "/save", consumes="application/json")
+	@PostMapping(path = "/findAll", consumes = "application/json")
+	public String findAll() {
+		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+		String message = "Child on host " + hostname + " - no CPU data load ";
+
+		MyEntity savedEntity = repository.save(entity);
+
+		message += " - Entity:" + savedEntity.getId() + " saved";
+
+		System.out.println(message);
+
+		return message;
+	}
+
+	@PostMapping(path = "/save", consumes = "application/json")
 	public String save(@RequestBody MyEntity entity) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - light data load ";
@@ -116,12 +135,12 @@ public class ChildScalingController {
 		MyEntity savedEntity = repository.save(entity);
 
 		message += " - Entity:" + savedEntity.getId() + " saved";
-		
+
 		System.out.println(message);
 
 		return message;
 	}
-	
+
 //	@PostMapping(path = "/saveAll", consumes="application/json")
 //	public String saveAll(@RequestBody List<MyEntity> entities) {
 //		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
@@ -135,10 +154,11 @@ public class ChildScalingController {
 //
 //		return message;
 //	}
-	
+
 	private void generateCPU(Optional<Integer> loopNumber) {
 		int defaultLoopNumber = 1000;
-		if (loopNumber.isPresent()) defaultLoopNumber = loopNumber.get().intValue();
+		if (loopNumber.isPresent())
+			defaultLoopNumber = loopNumber.get().intValue();
 		for (int i = 0; i < defaultLoopNumber; i++) {
 			try {
 				byte[] iv = new byte[16];
