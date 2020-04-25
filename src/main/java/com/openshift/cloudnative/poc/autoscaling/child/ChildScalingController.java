@@ -12,6 +12,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +26,8 @@ public class ChildScalingController {
 
 	@Autowired
 	private MyRepository repository;
-	@Autowired
-	private MyRepositoryImpl repositoryImpl;
+//	@Autowired
+//	private MyRepositoryImpl repositoryImpl;
 	
 	@GetMapping(path = "/")
 	public String status() {
@@ -59,8 +60,8 @@ public class ChildScalingController {
 		String message = "Child on host " + hostname + " - data load ";
 		
 		long timer = System.currentTimeMillis();
-		
-		Iterable<MyEntity> entities = repositoryImpl.findAll(resultSetSize.intValue());
+		Pageable request = PageRequest.of(0, 1);
+		Iterable<MyEntity> entities = repository.findAll(request);
 
 		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
@@ -99,7 +100,8 @@ public class ChildScalingController {
 		generateCPU(childLoopNumber);
 
 		//Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
-		Iterable<MyEntity> entities = repositoryImpl.findAll(resultSetSize.intValue());
+		Pageable request = PageRequest.of(0, 1);
+		Iterable<MyEntity> entities = repository.findAll(request);
 		
 		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
