@@ -73,8 +73,9 @@ public class ChildScalingController {
 	public String childHighCPULoadAll(
 			@RequestParam(value = "childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - childHighCPULoadAll ";
+		String message = "Child on host " + hostname + " - childHighCPULoadAll - CPU loop counter:" + childLoopNumber;
 		try {
+			
 			long timer = System.currentTimeMillis();
 
 			generateCPU(childLoopNumber);
