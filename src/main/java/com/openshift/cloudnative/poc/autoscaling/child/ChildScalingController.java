@@ -58,7 +58,7 @@ public class ChildScalingController {
 		
 		long timer = System.currentTimeMillis();
 		
-		Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
+		Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, resultSetSize.intValue()));
 
 		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
@@ -88,7 +88,7 @@ public class ChildScalingController {
 	
 	@GetMapping(path = "/childHighCPULoad", produces = "text/html")
 	@ApiOperation(value="Heavy CPU API + data load", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
-	public String childHighCPULoad(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber, @RequestParam(value="resultSetSize", defaultValue = "10") Optional<Integer> resultSetSize) {
+	public String childHighCPULoad(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber, @RequestParam(value="resultSetSize", defaultValue = "10") Integer resultSetSize) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - high CPU + data load ";
 		
@@ -97,7 +97,7 @@ public class ChildScalingController {
 		generateCPU(childLoopNumber);
 
 		//Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
-		Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1));
+		Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, resultSetSize.intValue()));
 		
 		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
