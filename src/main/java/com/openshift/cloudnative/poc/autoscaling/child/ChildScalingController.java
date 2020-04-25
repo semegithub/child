@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
 public class ChildScalingController {
 
 	@Autowired
-	private MyRepository repository;
+	private MyRepositoryImpl repository;
 
 	@GetMapping(path = "/")
 	public String status() {
