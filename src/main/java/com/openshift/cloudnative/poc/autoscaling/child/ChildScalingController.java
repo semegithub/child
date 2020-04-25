@@ -119,7 +119,7 @@ public class ChildScalingController {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - no CPU data load ";
 
-		MyEntity savedEntity = repository.save(entity);
+		List<MyEntity> entities = repository.findAll();
 
 		message += " - Entity:" + savedEntity.getId() + " saved";
 
