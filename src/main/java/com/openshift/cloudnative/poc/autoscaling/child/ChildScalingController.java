@@ -52,21 +52,21 @@ public class ChildScalingController {
 		return message;
 	}
 	
-	@GetMapping(path = "/childNoCPULoad")
-	public String childNoCPULoad(@RequestParam(value = "resultSetSize", defaultValue = "10") Integer resultSetSize) {
-		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - data load ";
-		
-		long timer = System.currentTimeMillis();
-		Pageable request = PageRequest.of(0, 1);
-		Iterable<MyEntity> entities = repository.findAll(request);
-
-		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
-		
-		System.out.println(message);
-
-		return message;
-	}
+//	@GetMapping(path = "/childNoCPULoad")
+//	public String childNoCPULoad(@RequestParam(value = "resultSetSize", defaultValue = "10") Integer resultSetSize) {
+//		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+//		String message = "Child on host " + hostname + " - data load ";
+//		
+//		long timer = System.currentTimeMillis();
+//		Pageable request = PageRequest.of(0, 1);
+//		Iterable<MyEntity> entities = repository.findAll(request);
+//
+//		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+//		
+//		System.out.println(message);
+//
+//		return message;
+//	}
 
 	@GetMapping(path = "/childHighCPULoadAll", produces = "text/html")
 	@ApiOperation(value="Heavy CPU API call", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
@@ -87,26 +87,26 @@ public class ChildScalingController {
 		return message;
 	}
 	
-	@GetMapping(path = "/childHighCPULoad", produces = "text/html")
-	@ApiOperation(value="Heavy CPU API + data load", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
-	public String childHighCPULoad(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber, @RequestParam(value="resultSetSize", defaultValue = "10") Integer resultSetSize) {
-		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - high CPU + data load ";
-		
-		long timer = System.currentTimeMillis();
-		
-		generateCPU(childLoopNumber);
-
-		//Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
-		Pageable request = PageRequest.of(0, 1);
-		Iterable<MyEntity> entities = repository.findAll(request);
-		
-		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
-		
-		System.out.println(message);
-
-		return message;
-	}
+//	@GetMapping(path = "/childHighCPULoad", produces = "text/html")
+//	@ApiOperation(value="Heavy CPU API + data load", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
+//	public String childHighCPULoad(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber, @RequestParam(value="resultSetSize", defaultValue = "10") Integer resultSetSize) {
+//		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+//		String message = "Child on host " + hostname + " - high CPU + data load ";
+//		
+//		long timer = System.currentTimeMillis();
+//		
+//		generateCPU(childLoopNumber);
+//
+//		//Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
+//		Pageable request = PageRequest.of(0, 1);
+//		Iterable<MyEntity> entities = repository.findAll(request);
+//		
+//		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+//		
+//		System.out.println(message);
+//
+//		return message;
+//	}
 
 	@PostMapping(path = "/save", consumes="application/json")
 	public String save(@RequestBody MyEntity entity) {
@@ -116,6 +116,20 @@ public class ChildScalingController {
 		MyEntity savedEntity = repository.save(entity);
 
 		message += " - Entity:" + savedEntity.getId() + " saved";
+		
+		System.out.println(message);
+
+		return message;
+	}
+	
+	@PostMapping(path = "/save", consumes="application/json")
+	public String saveAll(@RequestBody List<MyEntity> entities) {
+		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+		String message = "Child on host " + hostname + " - light data load ";
+
+		List<MyEntity> savedEntities = repository.saveAll(entities);
+
+		message += " - " + savedEntities.size() + " saved ";
 		
 		System.out.println(message);
 
