@@ -96,8 +96,9 @@ public class ChildScalingController {
 		
 		generateCPU(childLoopNumber);
 
-		Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
-
+		//Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "id")));
+		Iterable<MyEntity> entities = repository.findAll(PageRequest.of(0, 1));
+		
 		message += " - " + ((Collection<?>) entities).size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
 		
 		System.out.println(message);
