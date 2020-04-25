@@ -106,14 +106,14 @@ public class ChildScalingController {
 		return message;
 	}
 
-	@PostMapping(path = "/create", consumes="application/json")
-	public String create(@RequestBody MyEntity entity) {
+	@PostMapping(path = "/save", consumes="application/json")
+	public String save(@RequestBody MyEntity entity) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - light data load ";
 
-		repository.save(entity);
+		MyEntity savedEntity = repository.save(entity);
 
-		message += " - Entity:" + entity.getId() + " saved";
+		message += " - Entity:" + savedEntity.getId() + " saved";
 		
 		System.out.println(message);
 
