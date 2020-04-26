@@ -1,9 +1,7 @@
 package com.openshift.cloudnative.poc.autoscaling.child;
 
 import java.security.SecureRandom;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -11,8 +9,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -140,10 +136,10 @@ public class ChildScalingController {
 //		return message;
 //	}
 
-	@PostMapping(path = "/findAll", consumes = "application/json")
+	@GetMapping(path = "/findAll", consumes = "application/json")
 	public String findAll() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - no CPU data load ";
+		String message = "Child on host " + hostname + " - findAll ";
 		
 		long timer = System.currentTimeMillis();
 		List<MyEntity> entities = repository.findAll();
