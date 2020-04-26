@@ -23,7 +23,7 @@ public class ChildScalingController {
 	@Autowired
 	private MyRepository repository;
 
-	@GetMapping(path = "/")
+	@GetMapping(path = "/", produces = "text/html")
 	public String status() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child ready on host " + hostname + " \n";
@@ -75,6 +75,29 @@ public class ChildScalingController {
 			List<MyEntity> entities = repository.findAll();
 
 			message += " - loaded " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+
+		} catch (Exception e) {
+			message += " - " + e.getMessage();
+		} finally {
+			System.out.println(message);
+		}
+
+		return message;
+	}
+	
+	@GetMapping(path = "/childHighCPUCall", produces = "text/html")
+	@ApiOperation(value = "Heavy CPU + loadAll")
+	public String childHighCPUCall(
+			@RequestParam(value = "childstressCounter", defaultValue = "1000") Integer childstressCounter) {
+		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+		String message = "Child on host " + hostname + " - childHighCPULoadAll - CPU stress counter:" + childstressCounter;
+		try {
+			
+			long timer = System.currentTimeMillis();
+
+			generateCPU(childstressCounter.intValue());
+
+			message += " - done in " + (System.currentTimeMillis() - timer) + "[ms]";
 
 		} catch (Exception e) {
 			message += " - " + e.getMessage();
