@@ -32,6 +32,16 @@ public class ChildScalingController {
 
 		return message;
 	}
+	
+	@GetMapping(path = "/healthz")
+	public String healthz() {
+		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+		String message = "Child health check probe on host " + hostname + " \n";
+
+		System.out.println(message);
+
+		return message;
+	}
 
 	@GetMapping(path = "/childNoCPULoadAll")
 	public String childNoCPULoadAll() {
