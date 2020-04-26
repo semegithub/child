@@ -43,20 +43,6 @@ public class ChildScalingController {
 		return message;
 	}
 
-	@GetMapping(path = "/childNoCPULoadAll")
-	public String childNoCPULoadAll() {
-		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - no CPU data loadAll ";
-
-		long timer = System.currentTimeMillis();
-		List<MyEntity> entities = repository.findAll();
-
-		message += " - " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
-
-		System.out.println(message);
-
-		return message;
-	}
 
 //	@GetMapping(path = "/childNoCPULoad")
 //	public String childNoCPULoad(@RequestParam(value = "resultSetSize", defaultValue = "10") Integer resultSetSize) {
@@ -75,7 +61,7 @@ public class ChildScalingController {
 //	}
 
 	@GetMapping(path = "/childHighCPULoadAll", produces = "text/html")
-	@ApiOperation(value = "Heavy CPU API call")
+	@ApiOperation(value = "Heavy CPU + loadAll")
 	public String childHighCPULoadAll(
 			@RequestParam(value = "childstressCounter", defaultValue = "1000") Integer childstressCounter) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
@@ -99,17 +85,14 @@ public class ChildScalingController {
 		return message;
 	}
 
-	@GetMapping(path = "/childLoadAll/{counter}/loadAll", produces = "text/html")
-	@ApiOperation(value = "API load DB call", notes = "Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
-	public String childLoadAll(
-			@RequestParam(value = "counter", defaultValue = "0") Integer counter) {
+	@GetMapping(path = "/childLoadAll", produces = "text/html")
+	@ApiOperation(value = "loadAll")
+	public String childLoadAll() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - with CPU delay of " + counter + " loadAll ";
+		String message = "Child on host " + hostname + " - ";
 		try {
 			
 			long timer = System.currentTimeMillis();
-
-			generateCPU(counter.intValue());
 
 			List<MyEntity> entities = repository.findAll();
 
