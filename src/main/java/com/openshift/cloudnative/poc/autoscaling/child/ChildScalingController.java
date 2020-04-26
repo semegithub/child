@@ -71,14 +71,14 @@ public class ChildScalingController {
 	@GetMapping(path = "/childHighCPULoadAll", produces = "text/html")
 	@ApiOperation(value = "Heavy CPU API call", notes = "Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
 	public String childHighCPULoadAll(
-			@RequestParam(value = "childLoopNumber", defaultValue = "1000") Integer childLoopNumber) {
+			@RequestParam(value = "childstressCounter", defaultValue = "1000") Integer childstressCounter) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
-		String message = "Child on host " + hostname + " - childHighCPULoadAll - CPU loop counter:" + childLoopNumber;
+		String message = "Child on host " + hostname + " - childHighCPULoadAll - CPU stress counter:" + childstressCounter;
 		try {
 			
 			long timer = System.currentTimeMillis();
 
-			generateCPU(childLoopNumber.intValue());
+			generateCPU(childstressCounter.intValue());
 
 			List<MyEntity> entities = repository.findAll();
 
@@ -144,7 +144,8 @@ public class ChildScalingController {
 	public String findAll() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - no CPU data load ";
-
+		
+		long timer = System.currentTimeMillis();
 		List<MyEntity> entities = repository.findAll();
 
 		message += " - loaded " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
