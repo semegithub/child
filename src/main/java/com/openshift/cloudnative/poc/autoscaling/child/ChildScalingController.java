@@ -75,7 +75,7 @@ public class ChildScalingController {
 //	}
 
 	@GetMapping(path = "/childHighCPULoadAll", produces = "text/html")
-	@ApiOperation(value = "Heavy CPU API call", notes = "Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
+	@ApiOperation(value = "Heavy CPU API call")
 	public String childHighCPULoadAll(
 			@RequestParam(value = "childstressCounter", defaultValue = "1000") Integer childstressCounter) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
