@@ -146,7 +146,7 @@ public class ChildScalingController {
 //		return message;
 //	}
 
-	@GetMapping(path = "/findAll", consumes = "application/json")
+	@GetMapping(path = "/findAll", produces = "text/html")
 	public String findAll() {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
 		String message = "Child on host " + hostname + " - findAll ";
