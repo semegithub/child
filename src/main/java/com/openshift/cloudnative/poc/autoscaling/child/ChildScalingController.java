@@ -93,7 +93,33 @@ public class ChildScalingController {
 		return message;
 	}
 
-//	@GetMapping(path = "/childHighCPULoad", produces = "text/html")
+	@GetMapping(path = "/childLoadAll/{counter}/loadAll", produces = "text/html")
+	@ApiOperation(value = "API load DB call", notes = "Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
+	public String childLoadAll(
+			@RequestParam(value = "counter", defaultValue = "0") Integer counter) {
+		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
+		String message = "Child on host " + hostname + " - with CPU delay of " + counter + " loadAll ";
+		try {
+			
+			long timer = System.currentTimeMillis();
+
+			generateCPU(counter.intValue());
+
+			List<MyEntity> entities = repository.findAll();
+
+			message += " - loaded " + entities.size() + " entities in " + (System.currentTimeMillis() - timer) + "[ms]";
+
+		} catch (Exception e) {
+			message += " - " + e.getMessage();
+		} finally {
+			System.out.println(message);
+		}
+
+		return message;
+	}
+
+	
+	//	@GetMapping(path = "/childHighCPULoad", produces = "text/html")
 //	@ApiOperation(value="Heavy CPU API + data load", notes="Generate CPU by looping on cipher.update(), default value for the number of loops is 1000.")
 //	public String childHighCPULoad(@RequestParam(value="childLoopNumber", defaultValue = "1000") Optional<Integer> childLoopNumber, @RequestParam(value="resultSetSize", defaultValue = "10") Integer resultSetSize) {
 //		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
