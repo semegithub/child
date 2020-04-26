@@ -61,7 +61,7 @@ public class ChildScalingController {
 //	}
 
 	@GetMapping(path = "/childHighCPULoadAll", produces = "text/html")
-	@ApiOperation(value = "High CPU + DB loadAll")
+	@ApiOperation(value = "High CPU API call + DB loadAll")
 	public String childHighCPULoadAll(
 			@RequestParam(value = "childstressCounter", defaultValue = "1000") Integer childstressCounter) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
@@ -86,7 +86,7 @@ public class ChildScalingController {
 	}
 	
 	@GetMapping(path = "/childHighCPUCall", produces = "text/html")
-	@ApiOperation(value = "High CPU")
+	@ApiOperation(value = "High CPU API call")
 	public String childHighCPUCall(
 			@RequestParam(value = "childstressCounter", defaultValue = "1000") Integer childstressCounter) {
 		String hostname = System.getenv().getOrDefault("HOSTNAME", "unknown");
